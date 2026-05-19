@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Atelier IA & Mémoire — Demi-journée pratique</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;0,9..144,800;1,9..144,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1814;
+    --paper: #f4f0e6;
+    --paper-deep: #ebe5d4;
+    --accent: #b8412c;
+    --accent-soft: #d97757;
+    --muted: #6b6558;
+    --line: #2a261f;
+    --shadow: rgba(26, 24, 20, 0.08);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    line-height: 1.6;
+    font-weight: 400;
+    overflow-x: hidden;
+    background-image:
+      radial-gradient(circle at 20% 10%, rgba(184, 65, 44, 0.04) 0%, transparent 40%),
+      radial-gradient(circle at 80% 80%, rgba(217, 119, 87, 0.05) 0%, transparent 50%);
+    background-attachment: fixed;
+  }
+
+  /* Grain texture overlay */
+  body::before {
+    content: "";
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.15'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1;
+    mix-blend-mode: multiply;
+    opacity: 0.4;
+  }
+
+  .container {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    position: relative;
+    z-index: 2;
+  }
+
+  /* ===== HEADER ===== */
+  header {
+    padding: 4rem 0 3rem;
+    border-bottom: 1px solid var(--line);
+    position: relative;
+  }
+
+  .eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .eyebrow::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: var(--line);
+    opacity: 0.3;
+  }
+
+  h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 300;
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin-bottom: 1.5rem;
+  }
+
+  h1 em {
+    font-style: italic;
+    font-weight: 400;
+    color: var(--accent);
+  }
+
+  .lead {
+    font-family: 'Fraunces', serif;
+    font-size: 1.2rem;
+    font-weight: 300;
+    color: var(--muted);
+    max-width: 600px;
+    line-height: 1.5;
+  }
+
+  /* ===== SECTIONS ===== */
+  section {
+    padding: 4rem 0;
+    border-bottom: 1px solid rgba(42, 38, 31, 0.15);
+  }
+
+  section:last-of-type { border-bottom: none; }
+
+  .section-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--accent);
+    letter-spacing: 0.15em;
+  }
+
+  h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 400;
+    font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+    margin: 0.5rem 0 2rem;
+    letter-spacing: -0.01em;
+  }
+
+  /* ===== INTRO GRID ===== */
+  .prompt-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+    margin-top: 2rem;
+  }
+
+  .prompt-item {
+    background: var(--paper);
+    padding: 1.5rem;
+    transition: background 0.3s ease;
+  }
+
+  .prompt-item:hover { background: var(--paper-deep); }
+
+  .prompt-item-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.5rem;
+    color: var(--accent);
+    font-weight: 500;
+  }
+
+  .prompt-item-title {
+    font-family: 'Fraunces', serif;
+    font-size: 1.1rem;
+    margin: 0.5rem 0;
+    font-weight: 600;
+  }
+
+  .prompt-item p {
+    font-size: 0.9rem;
+    color: var(--muted);
+  }
+
+  /* ===== TOOLS ===== */
+  .tools-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1.5rem;
+  }
+
+  .tool-chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    background: transparent;
+    border: 1px solid var(--line);
+    color: var(--ink);
+    text-decoration: none;
+    font-size: 0.875rem;
+    font-family: 'JetBrains Mono', monospace;
+    transition: all 0.2s ease;
+    position: relative;
+  }
+
+  .tool-chip:hover {
+    background: var(--ink);
+    color: var(--paper);
+    transform: translate(-2px, -2px);
+    box-shadow: 4px 4px 0 var(--accent);
+  }
+
+  .tool-chip .arrow {
+    margin-left: 0.5rem;
+    transition: transform 0.2s;
+  }
+
+  .tool-chip:hover .arrow { transform: translateX(2px); }
+
+  /* ===== EXERCISES ===== */
+  .exercises-intro {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    color: var(--muted);
+    font-size: 1.1rem;
+    margin-bottom: 3rem;
+    max-width: 700px;
+  }
+
+  .exercise {
+    border-bottom: 1px solid rgba(42, 38, 31, 0.2);
+    transition: background 0.3s ease;
+  }
+
+  .exercise:first-child { border-top: 1px solid var(--line); }
+
+  .exercise-toggle {
+    width: 100%;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 1.75rem 0;
+    text-align: left;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 1.5rem;
+    align-items: center;
+    font-family: inherit;
+    color: var(--ink);
+    transition: padding 0.3s ease;
+  }
+
+  .exercise-toggle:hover {
+    padding-left: 1rem;
+  }
+
+  .exercise-toggle:hover .exo-num {
+    color: var(--accent);
+  }
+
+  .exo-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    transition: color 0.3s;
+  }
+
+  .exo-title {
+    font-family: 'Fraunces', serif;
+    font-size: 1.35rem;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+  }
+
+  .exo-icon {
+    width: 32px;
+    height: 32px;
+    border: 1px solid var(--line);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    position: relative;
+  }
+
+  .exo-icon::before,
+  .exo-icon::after {
+    content: "";
+    position: absolute;
+    background: var(--ink);
+    transition: transform 0.3s ease;
+  }
+
+  .exo-icon::before {
+    width: 12px;
+    height: 1px;
+  }
+
+  .exo-icon::after {
+    width: 1px;
+    height: 12px;
+  }
+
+  .exercise.open .exo-icon {
+    background: var(--accent);
+    border-color: var(--accent);
+    transform: rotate(180deg);
+  }
+
+  .exercise.open .exo-icon::before,
+  .exercise.open .exo-icon::after {
+    background: var(--paper);
+  }
+
+  .exercise.open .exo-icon::after {
+    transform: scaleY(0);
+  }
+
+  .exo-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s ease;
+  }
+
+  .exo-content-inner {
+    padding: 0.5rem 0 2.5rem 4.5rem;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  @media (min-width: 768px) {
+    .exo-content-inner {
+      grid-template-columns: 1fr 1fr;
+    }
+    .exo-description {
+      grid-column: 1 / -1;
+    }
+  }
+
+  .exo-description {
+    font-size: 1rem;
+    color: var(--ink);
+    line-height: 1.7;
+  }
+
+  .exo-description p { margin-bottom: 0.75rem; }
+
+  .exo-meta {
+    background: var(--paper-deep);
+    padding: 1.25rem 1.5rem;
+    border-left: 3px solid var(--accent);
+  }
+
+  .exo-meta-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--accent);
+    margin-bottom: 0.5rem;
+    display: block;
+  }
+
+  .exo-meta-content {
+    font-family: 'Fraunces', serif;
+    font-size: 1rem;
+    color: var(--ink);
+    line-height: 1.5;
+  }
+
+  .exo-meta-content a {
+    color: var(--accent);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+  }
+
+  .exo-meta-content a:hover {
+    background: var(--accent);
+    color: var(--paper);
+  }
+
+  .exo-sources {
+    grid-column: 1 / -1;
+    margin-top: 0.5rem;
+  }
+
+  .exo-sources h4 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--accent);
+    margin-bottom: 1rem;
+  }
+
+  .exo-sources ul {
+    list-style: none;
+  }
+
+  .exo-sources li {
+    padding: 0.6rem 0 0.6rem 1.5rem;
+    border-top: 1px solid rgba(42, 38, 31, 0.1);
+    font-size: 0.875rem;
+    line-height: 1.5;
+    position: relative;
+  }
+
+  .exo-sources li::before {
+    content: "→";
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .exo-sources li:last-child {
+    border-bottom: 1px solid rgba(42, 38, 31, 0.1);
+  }
+
+  .exo-sources a {
+    color: var(--ink);
+    text-decoration: none;
+    border-bottom: 1px dotted var(--muted);
+    transition: all 0.2s;
+  }
+
+  .exo-sources a:hover {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+
+  /* ===== FOOTER ===== */
+  footer {
+    padding: 3rem 0 4rem;
+    text-align: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  footer::before {
+    content: "✦";
+    display: block;
+    font-size: 1.5rem;
+    color: var(--accent);
+    margin-bottom: 1.5rem;
+    font-family: 'Fraunces', serif;
+  }
+
+  /* ===== ANIMATIONS ===== */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  header > .container > * {
+    animation: fadeUp 0.8s ease backwards;
+  }
+
+  .eyebrow { animation-delay: 0.1s; }
+  h1 { animation-delay: 0.2s; }
+  .lead { animation-delay: 0.4s; }
+
+  /* Decorative marks */
+  .deco-mark {
+    position: absolute;
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    color: var(--accent);
+    opacity: 0.1;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .deco-mark.tl { top: 1rem; left: -2rem; font-size: 8rem; }
+  .deco-mark.br { bottom: -2rem; right: -3rem; font-size: 12rem; }
+
+  @media (max-width: 600px) {
+    .container { padding: 0 1.25rem; }
+    section { padding: 2.5rem 0; }
+    header { padding: 2.5rem 0 2rem; }
+    .exo-content-inner { padding: 0.5rem 0 2rem 0; }
+    .exercise-toggle { gap: 1rem; }
+    .deco-mark { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <span class="deco-mark tl">&</span>
+    <div class="eyebrow">
+      <span>Demi-journée pratique · IA &amp; recherche</span>
+    </div>
+    <h1>Atelier IA pour le <em>mémoire</em><br>et le travail de recherche</h1>
+    <p class="lead">Mettre en pratique l'usage des IA génératives pour explorer un thème, dialoguer avec un texte, organiser son temps&nbsp;— et conserver l'esprit critique du chercheur.</p>
+  </div>
+</header>
+
+<main>
+
+  <!-- INTRO : BON PROMPT -->
+  <section id="prompt">
+    <div class="container">
+      <span class="section-num">§ 01</span>
+      <h2>Anatomie d'un bon prompt</h2>
+      <p style="max-width: 650px; color: var(--muted); font-family: 'Fraunces', serif; font-style: italic;">Cinq éléments à formuler explicitement, sans lesquels l'IA ajoutera son grain de sel — compliments inutiles, hors-sujets, approximations.</p>
+
+      <div class="prompt-grid">
+        <div class="prompt-item">
+          <div class="prompt-item-num">01</div>
+          <h3 class="prompt-item-title">Rôle</h3>
+          <p>Qui l'IA incarne.</p>
+        </div>
+        <div class="prompt-item">
+          <div class="prompt-item-num">02</div>
+          <h3 class="prompt-item-title">Tâche</h3>
+          <p>Ce que vous voulez obtenir.</p>
+        </div>
+        <div class="prompt-item">
+          <div class="prompt-item-num">03</div>
+          <h3 class="prompt-item-title">Contexte</h3>
+          <p>Informations supplémentaires, pourquoi vous voulez ce document.</p>
+        </div>
+        <div class="prompt-item">
+          <div class="prompt-item-num">04</div>
+          <h3 class="prompt-item-title">Format</h3>
+          <p>Longueur, structure du texte.</p>
+        </div>
+        <div class="prompt-item">
+          <div class="prompt-item-num">05</div>
+          <h3 class="prompt-item-title">Contraintes</h3>
+          <p>Ce que vous ne voulez pas dans le texte.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONSIGNES -->
+  <section id="consignes">
+    <div class="container">
+      <span class="section-num">§ 02</span>
+      <h2>Consignes générales</h2>
+      <p style="max-width: 700px;">Chaque exercice comporte une <strong>étape de vérification</strong>. Selon votre avancement dans le travail de mémoire, choisissez parmi les exercices ci-dessous. La plupart peuvent s'appliquer à d'autres travaux que vous devez produire.</p>
+    </div>
+  </section>
+
+  <!-- OUTILS -->
+  <section id="outils">
+    <div class="container">
+      <span class="section-num">§ 03</span>
+      <h2>Outils — LLM au choix</h2>
+      <p style="color: var(--muted); font-size: 0.9rem;">Certains requièrent un compte.</p>
+      <div class="tools-list">
+        <a class="tool-chip" href="https://chatgpt.com/" target="_blank" rel="noopener">ChatGPT <span class="arrow">↗</span></a>
+        <a class="tool-chip" href="https://claude.ai/" target="_blank" rel="noopener">Claude <span class="arrow">↗</span></a>
+        <a class="tool-chip" href="https://copilot.microsoft.com/" target="_blank" rel="noopener">Copilot <span class="arrow">↗</span></a>
+        <a class="tool-chip" href="https://www.ecosia.org/ai-chat" target="_blank" rel="noopener">Ecosia IA <span class="arrow">↗</span></a>
+        <a class="tool-chip" href="https://euria.infomaniak.com/" target="_blank" rel="noopener">Euria <span class="arrow">↗</span></a>
+        <a class="tool-chip" href="https://gemini.google.com/" target="_blank" rel="noopener">Gemini <span class="arrow">↗</span></a>
+        <a class="tool-chip" href="https://chat.mistral.ai/chat" target="_blank" rel="noopener">Le Chat <span class="arrow">↗</span></a>
+        <a class="tool-chip" href="https://lumo.proton.me/" target="_blank" rel="noopener">Lumo <span class="arrow">↗</span></a>
+        <a class="tool-chip" href="https://notebooklm.google.com/" target="_blank" rel="noopener">NotebookLM <span class="arrow">↗</span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- EXERCICES -->
+  <section id="exercices" style="position: relative;">
+    <div class="container">
+      <span class="deco-mark br">?</span>
+      <span class="section-num">§ 04</span>
+      <h2>Les exercices</h2>
+      <p class="exercises-intro">Huit pistes pour mettre l'IA au service du mémoire&nbsp;— de la découverte d'un thème à la mise en forme bibliographique.</p>
+
+      <!-- EXO 1 -->
+      <article class="exercise">
+        <button class="exercise-toggle" aria-expanded="false">
+          <span class="exo-num">EXO 01</span>
+          <span class="exo-title">Découvrir et explorer un thème</span>
+          <span class="exo-icon" aria-hidden="true"></span>
+        </button>
+        <div class="exo-content">
+          <div class="exo-content-inner">
+            <div class="exo-description">
+              <p><strong>Travail préalable&nbsp;:</strong> identifier un thème ou une notion, le définir soi-même, noter les idées liées, les faits, événements historiques… Tout ce que vous évoque l'idée.</p>
+              <p>C'est l'idée du carnet de bord / journal de terrain où vous notez tout ce qui vous vient sur un sujet. C'est le travail des <em>prénotions</em>.</p>
+              <p>Puis chercher une définition officielle (Insee, dictionnaire, dictionnaire spécialisé…). Définir les sous-éléments du thème&nbsp;: qui est en jeu dans le sujet&nbsp;? (population, territoire…) Qu'est-ce qui vous intéresse dans le sujet&nbsp;?</p>
+              <p>Chercher des références larges&nbsp;: podcasts, films, livres… C'est l'exploration du début de recherche, très large.</p>
+            </div>
+            <div class="exo-meta">
+              <span class="exo-meta-label">Objectif</span>
+              <p class="exo-meta-content">Découvrir, explorer un thème.</p>
+            </div>
+            <div class="exo-meta">
+              <span class="exo-meta-label">Résultat</span>
+              <p class="exo-meta-content">Obtenir une bibliographie et des documents pour découvrir un thème.</p>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- EXO 2 -->
+      <article class="exercise">
+        <button class="exercise-toggle" aria-expanded="false">
+          <span class="exo-num">EXO 02</span>
+          <span class="exo-title">Identifier les «&nbsp;géants&nbsp;» d'un thème ou d'une notion</span>
+          <span class="exo-icon" aria-hidden="true"></span>
+        </button>
+        <div class="exo-content">
+          <div class="exo-content-inner">
+            <div class="exo-description">
+              <p>Selon l'idée des «&nbsp;nains sur des épaules de géants&nbsp;», retrouver les auteurs importants, incontournables pour une notion, une problématique sociale ou de recherche, et les ouvrages liés.</p>
+            </div>
+            <div class="exo-meta">
+              <span class="exo-meta-label">Objectif</span>
+              <p class="exo-meta-content">Identifier vos prochaines lectures et les hiérarchiser (qui est prioritaire).</p>
+            </div>
+            <div class="exo-meta">
+              <span class="exo-meta-label">Résultat</span>
+              <p class="exo-meta-content">Une bibliographie.</p>
+            </div>
+            <div class="exo-meta" style="grid-column: 1 / -1;">
+              <span class="exo-meta-label">Vérification</span>
+              <p class="exo-meta-content">Visite au centre de documentation pour trouver physiquement les documents.</p>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- EXO 3 -->
+      <article class="exercise">
+        <button class="exercise-toggle" aria-expanded="false">
+          <span class="exo-num">EXO 03</span>
+          <span class="exo-title">Explorer un texte</span>
+          <span class="exo-icon" aria-hidden="true"></span>
+        </button>
+        <div class="exo-content">
+          <div class="exo-content-inner">
+            <div class="exo-description">
+              <p>À partir d'un article déjà lu, approfondir vos connaissances. Par exemple&nbsp;: un article important de votre sujet ou de méthode.</p>
+              <p>Discussion avec l'IA, et produire des notes (je suggère de les rédiger vous-même à partir de la conversation, quitte à proposer à l'IA de fournir un avis sur vos notes).</p>
+            </div>
+            <div class="exo-meta">
+              <span class="exo-meta-label">Objectif</span>
+              <p class="exo-meta-content">Approfondir une notion.</p>
+            </div>
+            <div class="exo-meta">
+              <span class="exo-meta-label">Résultat</span>
+              <p class="exo-meta-content">Un résumé de texte, des notes sur un sujet, une meilleure compréhension, un fichier audio à écouter plus tard (NotebookLM).</p>
+            </div>
+            <div class="exo-meta" style="grid-column: 1 / -1;">
+              <span class="exo-meta-label">Vérification</span>
+              <p class="exo-meta-content">Confronter ce que dit l'IA à ce que dit le texte.</p>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- EXO 4 -->
+      <article class="exercise">
+        <button class="exercise-toggle" aria-expanded="false">
+          <span class="exo-num">EXO 04</span>
+          <span class="exo-title">Compléter une lecture</span>
+          <span class="exo-icon" aria-hidden="true"></span>
+        </button>
+        <div class="exo-content">
+          <div class="exo-content-inner">
+            <div class="exo-description">
+              <p>Proche de l'exercice précédent&nbsp;: vous avez lu un texte long partiellement ou il y a longtemps, il s'agit de revisiter un classique.</p>
+              <p><strong>Source&nbsp;:</strong> <a href="https://classiques.uqam.ca/" target="_blank" rel="noopener" style="color: var(--accent);">classiques.uqam.ca</a></p>
+            </div>
+            <div class="exo-meta">
+              <span class="exo-meta-label">Objectif</span>
+              <p class="exo-meta-content">Rafraîchir ou compléter ce que vous savez d'un texte. Sorte de révision.</p>
+            </div>
+            <div class="exo-meta">
+              <span class="exo-meta-label">Résultat</span>
+              <p class="exo-meta-content">Une carte mentale ou des notes très brèves de révision.</p>
+            </div>
+            <div class="exo-meta" style="grid-column: 1 / -1;">
+              <span class="exo-meta-label">Vérification</span>
+              <p class="exo-meta-content">Vérifier des citations choisies.</p>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- EXO 5 -->
+      <article class="exercise">
+        <button class="exercise-toggle" aria-expanded="false">
+          <span class="exo-num">EXO 05</span>
+          <span class="exo-title">Approcher un texte inconnu</span>
+          <span class="exo-icon" aria-hidden="true"></span>
+        </button>
+        <div class="exo-content">
+          <div class="exo-content-inner">
+            <div class="exo-description">
+              <p>Découvrir un livre et son contexte&nbsp;: par qui a-t-il été écrit, dans quelles circonstances, à quelle occasion. Que dit le texte, comment, quelle structure, sur qui s'appuie-t-il&nbsp;? Quel est le lien avec votre sujet&nbsp;?</p>
+              <p><strong>Source&nbsp;:</strong> <a href="https://classiques.uqam.ca/" target="_blank" rel="noopener" style="color: var(--accent);">classiques.uqam.ca</a></p>
+            </div>
+            <div class="exo-meta">
+              <span class="exo-meta-label">Objectif</span>
+              <p class="exo-meta-content">Déterminer si un texte vaut la peine d'être lu.</p>
+            </div>
+            <div class="exo-meta">
+              <span class="exo-meta-label">Résultat</span>
+              <p class="exo-meta-content">Organisation de vos priorités de lecture.</p>
+            </div>
+            <div class="exo-meta" style="grid-column: 1 / -1;">
+              <span class="exo-meta-label">Vérification</span>
+              <p class="exo-meta-content">Lecture universitaire&nbsp;: introduction, un chapitre, conclusion.</p>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- EXO 6 -->
+      <article class="exercise">
+        <button class="exercise-toggle" aria-expanded="false">
+          <span class="exo-num">EXO 06</span>
+          <span class="exo-title">Se créer un interlocuteur spécialisé</span>
+          <span class="exo-icon" aria-hidden="true"></span>
+        </button>
+        <div class="exo-content">
+          <div class="exo-content-inner">
+            <div class="exo-description">
+              <p>Par exemple en méthode de l'entretien. Fournir à Claude / NotebookLM des documents méthodologiques et le solliciter pour critiquer et améliorer vos guides d'entretien.</p>
+            </div>
+            <div class="exo-meta">
+              <span class="exo-meta-label">Objectif</span>
+              <p class="exo-meta-content">Améliorer vos outils d'enquête.</p>
+            </div>
+            <div class="exo-meta">
+              <span class="exo-meta-label">Résultat</span>
+              <p class="exo-meta-content">Obtenir un interlocuteur à solliciter au fil de l'enquête pour ajuster les entretiens.</p>
+            </div>
+            <div class="exo-meta" style="grid-column: 1 / -1;">
+              <span class="exo-meta-label">Vérification</span>
+              <p class="exo-meta-content">Demander à l'IA de sourcer ses propos systématiquement et vérifier les citations dans les documents originaux.</p>
+            </div>
+
+            <div class="exo-sources">
+              <h4>Documents choisis</h4>
+              <ul>
+                <li>Bertrand, J. <a href="https://sociogre.hypotheses.org/210" target="_blank" rel="noopener">Mener un entretien sur la sexualité&nbsp;: positionnements, méthodes et outils pour accéder à l'intime</a></li>
+                <li>Chamboredon, H., Pavis, F., Surdez, M., &amp; Willemez, L. (1994). <a href="https://www.persee.fr/doc/genes_1155-3219_1994_num_16_1_1251" target="_blank" rel="noopener">S'imposer aux imposants. À propos de quelques obstacles rencontrés par des sociologues débutants dans la pratique et l'usage de l'entretien</a>. <em>Genèses</em>, 16, 114-132.</li>
+                <li>Fusi, M. (2020, 24 mai). <a href="https://ptvirgule.hypotheses.org/2040" target="_blank" rel="noopener">La méthode de l'entretien, libre ou semi-directif&nbsp;?</a> <em>Point-virgule</em>.</li>
+                <li>Kašník, J. <a href="https://www.erudit.org/fr/revues/npss/2025-v20-n2-npss010238/1119800ar/" target="_blank" rel="noopener">La triangulation méthodologique pour libérer la parole des personnes désignées comme «&nbsp;handicapées mentales&nbsp;» et de leur entourage familial et professionnel en France et au Mexique</a>.</li>
+                <li>Pinçon, M., &amp; Pinçon-Charlot, M. (1991). <a href="https://www.persee.fr/doc/genes_1155-3219_1991_num_3_1_1050" target="_blank" rel="noopener">Pratiques d'enquête dans l'aristocratie et la grande bourgeoisie</a>. <em>Genèses</em>, 3, 120-133.</li>
+                <li>Pinçon, M., &amp; Pinçon-Charlot, M. (2000). <a href="https://books.openedition.org/pul/10011?lang=fr" target="_blank" rel="noopener">Enquête en grande bourgeoisie</a>. In P. Fritsch (éd.), <em>Implication et engagement</em>. Presses universitaires de Lyon.</li>
+                <li>Mauger, G. (1991). <a href="https://www.persee.fr/doc/genes_1155-3219_1991_num_6_1_1096" target="_blank" rel="noopener">Enquêter en milieu populaire</a>. <em>Genèses</em>, 6, 125-143.</li>
+                <li>Voros, F. (2014). <a href="https://journals.openedition.org/sds/1393" target="_blank" rel="noopener">Partager l'intimité des publics&nbsp;: genre, sexualité et complicité hégémonique dans une enquête en réception</a>. <em>Sciences de la société</em>, 92, 193-207.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- EXO 7 -->
+      <article class="exercise">
+        <button class="exercise-toggle" aria-expanded="false">
+          <span class="exo-num">EXO 07</span>
+          <span class="exo-title">Organisation du travail — rétroplanning</span>
+          <span class="exo-icon" aria-hidden="true"></span>
+        </button>
+        <div class="exo-content">
+          <div class="exo-content-inner">
+            <div class="exo-description">
+              <p>L'enjeu est de produire un outil qui vous soit utile, adapté à votre fonctionnement. Fournissez les éléments à l'IA (date de rendu, étapes importantes encore à faire, leur durée estimée, votre rythme de travail estimé, etc.).</p>
+              <p>Discutez avec l'IA pour déterminer ce qui vous convient le mieux en organisation comme en suivi de votre avancement.</p>
+            </div>
+            <div class="exo-meta">
+              <span class="exo-meta-label">Objectif</span>
+              <p class="exo-meta-content">Organiser le temps qu'il vous reste pour finir le mémoire ou un autre devoir.</p>
+            </div>
+            <div class="exo-meta">
+              <span class="exo-meta-label">Résultat</span>
+              <p class="exo-meta-content">Un PDF de planning (adapté à vos outils&nbsp;: agenda en ligne, papier, autre), un fichier <code>.ics</code> à importer dans un agenda en ligne, ou une liste de choses à faire chronologique.</p>
+            </div>
+            <div class="exo-meta" style="grid-column: 1 / -1;">
+              <span class="exo-meta-label">Vérification</span>
+              <p class="exo-meta-content">Relecture du document final.</p>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- EXO 8 -->
+      <article class="exercise">
+        <button class="exercise-toggle" aria-expanded="false">
+          <span class="exo-num">EXO 08</span>
+          <span class="exo-title">Produire un outil qui met en forme vos références</span>
+          <span class="exo-icon" aria-hidden="true"></span>
+        </button>
+        <div class="exo-content">
+          <div class="exo-content-inner">
+            <div class="exo-description">
+              <p><strong>Document de référence&nbsp;:</strong> <a href="https://irts-poitou-charentes.centredoc.fr/index.php?lvl=cmspage&pageid=6&id_rubrique=147" target="_blank" rel="noopener" style="color: var(--accent);">Centre de documentation IRTS Poitou-Charentes</a></p>
+            </div>
+            <div class="exo-meta">
+              <span class="exo-meta-label">Objectif</span>
+              <p class="exo-meta-content">Gagner du temps sur la mise en forme.</p>
+            </div>
+            <div class="exo-meta">
+              <span class="exo-meta-label">Résultat</span>
+              <p class="exo-meta-content">Une bibliographie aux normes APA.</p>
+            </div>
+            <div class="exo-meta" style="grid-column: 1 / -1;">
+              <span class="exo-meta-label">Vérification</span>
+              <p class="exo-meta-content">Relecture du document.</p>
+            </div>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="container">
+    Atelier IA &amp; mémoire — Demi-journée pratique
+  </div>
+</footer>
+
+<script>
+  document.querySelectorAll('.exercise-toggle').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const exercise = btn.closest('.exercise');
+      const content = exercise.querySelector('.exo-content');
+      const isOpen = exercise.classList.contains('open');
+
+      if (isOpen) {
+        content.style.maxHeight = '0';
+        exercise.classList.remove('open');
+        btn.setAttribute('aria-expanded', 'false');
+      } else {
+        exercise.classList.add('open');
+        content.style.maxHeight = content.scrollHeight + 'px';
+        btn.setAttribute('aria-expanded', 'true');
+      }
+    });
+  });
+
+  // Recalcul du max-height si la fenêtre change (et qu'un exo est ouvert)
+  window.addEventListener('resize', () => {
+    document.querySelectorAll('.exercise.open .exo-content').forEach(c => {
+      c.style.maxHeight = c.scrollHeight + 'px';
+    });
+  });
+</script>
+
+</body>
+</html>
