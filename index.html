@@ -168,40 +168,298 @@
   }
 
   /* ===== TOOLS ===== */
-  .tools-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    margin-top: 1.5rem;
-  }
-
-  .tool-chip {
-    display: inline-flex;
-    align-items: center;
-    padding: 0.5rem 1rem;
-    background: transparent;
-    border: 1px solid var(--line);
-    color: var(--ink);
-    text-decoration: none;
-    font-size: 0.875rem;
-    font-family: 'JetBrains Mono', monospace;
-    transition: all 0.2s ease;
-    position: relative;
-  }
-
-  .tool-chip:hover {
-    background: var(--ink);
-    color: var(--paper);
-    transform: translate(-2px, -2px);
-    box-shadow: 4px 4px 0 var(--accent);
-  }
-
-  .tool-chip .arrow {
-    margin-left: 0.5rem;
+  .arrow {
+    margin-left: 0.4rem;
+    display: inline-block;
     transition: transform 0.2s;
   }
 
-  .tool-chip:hover .arrow { transform: translateX(2px); }
+  /* Featured : NotebookLM */
+  .featured-tool {
+    margin-top: 2rem;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    border: 2px solid var(--ink);
+    background: var(--ink);
+    color: var(--paper);
+    position: relative;
+    box-shadow: 8px 8px 0 var(--accent);
+  }
+
+  .featured-tool-tag {
+    background: var(--accent);
+    color: var(--paper);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    writing-mode: vertical-rl;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem 0.6rem;
+  }
+
+  .featured-tool-body {
+    padding: 2rem;
+  }
+
+  .featured-tool-body h3 {
+    font-family: 'Fraunces', serif;
+    font-weight: 400;
+    font-size: 1.8rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .featured-owner {
+    font-size: 1rem;
+    color: var(--accent-soft);
+    font-style: italic;
+  }
+
+  .featured-tool-body p {
+    color: #d8d2c4;
+    font-size: 0.97rem;
+    max-width: 640px;
+    margin-bottom: 1.5rem;
+  }
+
+  .featured-tool-body strong { color: var(--paper); }
+  .featured-tool-body em { color: var(--accent-soft); font-style: italic; }
+
+  .featured-link {
+    display: inline-flex;
+    align-items: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--ink);
+    background: var(--paper);
+    padding: 0.7rem 1.2rem;
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+
+  .featured-link:hover {
+    background: var(--accent);
+    color: var(--paper);
+  }
+
+  .featured-link:hover .arrow { transform: translateX(3px); }
+
+  /* Deux colonnes : familles d'IA */
+  .tool-columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+    margin-top: 2.5rem;
+  }
+
+  .tool-col {
+    background: var(--paper);
+    padding: 1.75rem;
+  }
+
+  .tool-col-head {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 1rem;
+    align-items: start;
+    margin-bottom: 1.25rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid rgba(42, 38, 31, 0.2);
+  }
+
+  .tool-col-num {
+    font-family: 'Fraunces', serif;
+    font-size: 1.6rem;
+    line-height: 1;
+    color: var(--paper);
+    background: var(--accent);
+    width: 2.4rem;
+    height: 2.4rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .tool-col-head h3 {
+    font-family: 'Fraunces', serif;
+    font-weight: 400;
+    font-size: 1.2rem;
+    line-height: 1.25;
+    margin-bottom: 0.4rem;
+  }
+
+  .tool-col-head p {
+    font-size: 0.85rem;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  .tool-table {
+    list-style: none;
+  }
+
+  .tool-table li {
+    border-bottom: 1px solid rgba(42, 38, 31, 0.12);
+  }
+
+  .tool-table li:first-child {
+    border-top: 1px solid rgba(42, 38, 31, 0.12);
+  }
+
+  .tool-table a {
+    display: flex;
+    align-items: center;
+    padding: 0.7rem 0.25rem;
+    text-decoration: none;
+    color: var(--ink);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    transition: all 0.2s ease;
+  }
+
+  .tool-table a:hover {
+    padding-left: 0.9rem;
+    color: var(--accent);
+  }
+
+  .tool-owner {
+    color: var(--muted);
+    font-size: 0.75rem;
+    margin-left: 0.4rem;
+  }
+
+  .tool-table a:hover .tool-owner { color: var(--accent-soft); }
+  .tool-table a .arrow { margin-left: auto; }
+  .tool-table a:hover .arrow { transform: translateX(3px); }
+
+  .tool-col-note {
+    margin-top: 1rem;
+    font-size: 0.8rem;
+    font-style: italic;
+    color: var(--muted);
+    font-family: 'Fraunces', serif;
+  }
+
+  /* Outil recommandé en local : Jan */
+  .tool-recommended {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-areas: "tag arrow" "name arrow" "desc arrow";
+    gap: 0.35rem 1rem;
+    align-items: center;
+    text-decoration: none;
+    color: var(--ink);
+    background: var(--paper-deep);
+    border: 1px solid var(--accent);
+    border-left: 3px solid var(--accent);
+    padding: 1.1rem 1.25rem;
+    transition: all 0.2s ease;
+  }
+
+  .tool-recommended:hover {
+    background: var(--accent);
+    color: var(--paper);
+  }
+
+  .tool-recommended-tag {
+    grid-area: tag;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--accent);
+  }
+
+  .tool-recommended:hover .tool-recommended-tag { color: var(--paper); }
+
+  .tool-recommended-name {
+    grid-area: name;
+    font-family: 'Fraunces', serif;
+    font-size: 1.25rem;
+  }
+
+  .tool-recommended-desc {
+    grid-area: desc;
+    font-size: 0.82rem;
+    line-height: 1.5;
+    color: var(--muted);
+  }
+
+  .tool-recommended:hover .tool-recommended-desc,
+  .tool-recommended:hover .tool-owner { color: #e8e2d4; }
+
+  .tool-recommended .arrow {
+    grid-area: arrow;
+    font-size: 1.1rem;
+  }
+
+  .tool-recommended:hover .arrow { transform: translate(3px, -3px); }
+
+  .tool-col-sub {
+    margin: 1.25rem 0 0.4rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+  }
+
+  /* ===== TABLE RONDE ===== */
+  .roundtable {
+    margin-top: 2rem;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    border: 1px dashed var(--line);
+    background:
+      repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 12px,
+        rgba(184, 65, 44, 0.03) 12px,
+        rgba(184, 65, 44, 0.03) 24px
+      );
+  }
+
+  .roundtable-status {
+    background: var(--accent-soft);
+    color: var(--paper);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    writing-mode: vertical-rl;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.25rem 0.6rem;
+  }
+
+  .roundtable-body {
+    padding: 2rem;
+  }
+
+  .roundtable-body h3 {
+    font-family: 'Fraunces', serif;
+    font-weight: 400;
+    font-size: 1.4rem;
+    margin-bottom: 0.75rem;
+    letter-spacing: -0.01em;
+  }
+
+  .roundtable-body p {
+    color: var(--muted);
+    font-size: 0.97rem;
+    max-width: 620px;
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+  }
 
   /* ===== EXERCISES ===== */
   .exercises-intro {
@@ -467,6 +725,10 @@
   .deco-mark.tl { top: 1rem; left: -2rem; font-size: 8rem; }
   .deco-mark.br { bottom: -2rem; right: -3rem; font-size: 12rem; }
 
+  @media (max-width: 760px) {
+    .tool-columns { grid-template-columns: 1fr; }
+  }
+
   @media (max-width: 600px) {
     .container { padding: 0 1.25rem; }
     section { padding: 2.5rem 0; }
@@ -474,6 +736,14 @@
     .exo-content-inner { padding: 0.5rem 0 2rem 0; }
     .exercise-toggle { gap: 1rem; }
     .deco-mark { display: none; }
+    .featured-tool { box-shadow: 5px 5px 0 var(--accent); }
+    .featured-tool-body { padding: 1.5rem; }
+    .featured-tool-body h3 { font-size: 1.45rem; }
+    .featured-tool-tag { padding: 1rem 0.5rem; font-size: 0.6rem; }
+    .tool-col { padding: 1.25rem; }
+    .roundtable-body { padding: 1.5rem; }
+    .roundtable-body h3 { font-size: 1.2rem; }
+    .roundtable-status { padding: 1rem 0.5rem; font-size: 0.6rem; }
   }
 </style>
 </head>
@@ -492,10 +762,92 @@
 
 <main>
 
-  <!-- INTRO : BON PROMPT -->
-  <section id="prompt">
+  <!-- TABLE RONDE -->
+  <section id="table-ronde">
     <div class="container">
       <span class="section-num">§ 01</span>
+      <h2>Table ronde — Initiation à la recherche</h2>
+      <div class="roundtable">
+        <div class="roundtable-status">À venir</div>
+        <div class="roundtable-body">
+          <h3>Notes partielles de la table ronde du lundi 18/05</h3>
+          <p>Cette section accueillera les notes prises lors de la table ronde «&nbsp;Initiation à la recherche&nbsp;» du lundi 18 mai.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- OUTILS -->
+  <section id="outils">
+    <div class="container">
+      <span class="section-num">§ 02</span>
+      <h2>Outils</h2>
+
+      <!-- Bloc mis en avant : NotebookLM -->
+      <div class="featured-tool">
+        <div class="featured-tool-tag">À privilégier</div>
+        <div class="featured-tool-body">
+          <h3>NotebookLM <span class="featured-owner">(Google)</span></h3>
+          <p>Outil de <strong>compréhension, de révision et d'analyse de document(s)</strong>. À la différence d'un chatbot généraliste, NotebookLM travaille à partir des sources que <em>vous</em> lui fournissez et y reste ancré — idéal pour explorer un texte, réviser un classique ou dialoguer avec un corpus méthodologique. C'est l'outil recommandé pour tout étudiant.</p>
+          <a class="featured-link" href="https://notebooklm.google.com/" target="_blank" rel="noopener">Ouvrir NotebookLM <span class="arrow">↗</span></a>
+        </div>
+      </div>
+
+      <!-- Deux familles d'IA générative -->
+      <div class="tool-columns">
+
+        <div class="tool-col">
+          <div class="tool-col-head">
+            <span class="tool-col-num">A</span>
+            <div>
+              <h3>IA générative (chat) en ligne</h3>
+              <p>Accessible depuis un navigateur. Certains services nécessitent un compte. Les données transitent par les serveurs du fournisseur.</p>
+            </div>
+          </div>
+          <ul class="tool-table">
+            <li><a href="https://chatgpt.com/" target="_blank" rel="noopener">ChatGPT <span class="tool-owner">(OpenAI, États-Unis)</span> <span class="arrow">↗</span></a></li>
+            <li><a href="https://claude.ai/" target="_blank" rel="noopener">Claude <span class="tool-owner">(Anthropic, États-Unis)</span> <span class="arrow">↗</span></a></li>
+            <li><a href="https://copilot.microsoft.com/" target="_blank" rel="noopener">Copilot <span class="tool-owner">(Microsoft, États-Unis)</span> <span class="arrow">↗</span></a></li>
+            <li><a href="https://www.ecosia.org/ai-chat" target="_blank" rel="noopener">Ecosia IA <span class="tool-owner">(Ecosia, Allemagne)</span> <span class="arrow">↗</span></a></li>
+            <li><a href="https://euria.infomaniak.com/" target="_blank" rel="noopener">Euria <span class="tool-owner">(Infomaniak, Suisse)</span> <span class="arrow">↗</span></a></li>
+            <li><a href="https://gemini.google.com/" target="_blank" rel="noopener">Gemini <span class="tool-owner">(Google, États-Unis)</span> <span class="arrow">↗</span></a></li>
+            <li><a href="https://chat.mistral.ai/chat" target="_blank" rel="noopener">Le Chat <span class="tool-owner">(Mistral, France)</span> <span class="arrow">↗</span></a></li>
+            <li><a href="https://lumo.proton.me/" target="_blank" rel="noopener">Lumo <span class="tool-owner">(Proton, Suisse)</span> <span class="arrow">↗</span></a></li>
+          </ul>
+        </div>
+
+        <div class="tool-col">
+          <div class="tool-col-head">
+            <span class="tool-col-num">B</span>
+            <div>
+              <h3>IA générative (chat) à installer sur son ordinateur</h3>
+              <p>Solutions gratuites et open-source exécutées en local&nbsp;: <strong>les données ne quittent pas l'ordinateur</strong>. Nécessitent une installation et une machine suffisamment puissante.</p>
+            </div>
+          </div>
+          <a class="tool-recommended" href="https://jan.ai/" target="_blank" rel="noopener">
+            <span class="tool-recommended-tag">Recommandé</span>
+            <span class="tool-recommended-name">Jan <span class="tool-owner">(open-source)</span></span>
+            <span class="tool-recommended-desc">Simple installer&nbsp;: téléchargement, installation classique, et c'est prêt. C'est Chat GPT à la maison.</span>
+            <span class="arrow">↗</span>
+          </a>
+          <p class="tool-col-sub">Alternatives plus complexes&nbsp;:</p>
+          <ul class="tool-table">
+            <li><a href="https://lmstudio.ai/" target="_blank" rel="noopener">LM Studio <span class="tool-owner">(gratuit)</span> <span class="arrow">↗</span></a></li>
+			  <li><a href="https://www.open-notebook.ai/" target="_blank" rel="noopener">OpenNotebook<span class="tool-owner">(open-source, équivalent local à NotebookLM)</span> <span class="arrow">↗</span></a></li>
+          
+            <li><a href="https://ollama.com/" target="_blank" rel="noopener">Ollama <span class="tool-owner">(open-source)</span> <span class="arrow">↗</span></a></li>
+          </ul>
+          <p class="tool-col-note">Ces logiciels servent à exécuter des modèles ouverts (Llama, Mistral, Gemma…) directement sur la machine.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- PROMPT -->
+  <section id="prompt">
+    <div class="container">
+      <span class="section-num">§ 03</span>
       <h2>Anatomie d'un bon prompt</h2>
       <p style="max-width: 650px; color: var(--muted); font-family: 'Fraunces', serif; font-style: italic;">Cinq éléments à formuler explicitement, sans lesquels l'IA ajoutera son grain de sel — compliments inutiles, hors-sujets, approximations.</p>
 
@@ -503,7 +855,7 @@
         <div class="prompt-item">
           <div class="prompt-item-num">01</div>
           <h3 class="prompt-item-title">Rôle</h3>
-          <p>Qui l'IA incarne.</p>
+          <p>Qui l'IA est censée incarner.</p>
         </div>
         <div class="prompt-item">
           <div class="prompt-item-num">02</div>
@@ -529,42 +881,13 @@
     </div>
   </section>
 
-  <!-- CONSIGNES -->
-  <section id="consignes">
-    <div class="container">
-      <span class="section-num">§ 02</span>
-      <h2>Consignes générales</h2>
-      <p style="max-width: 700px;">Chaque exercice comporte une <strong>étape de vérification</strong>. Selon votre avancement dans le travail de mémoire, choisissez parmi les exercices ci-dessous. La plupart peuvent s'appliquer à d'autres travaux que vous devez produire.</p>
-    </div>
-  </section>
-
-  <!-- OUTILS -->
-  <section id="outils">
-    <div class="container">
-      <span class="section-num">§ 03</span>
-      <h2>Outils — LLM au choix</h2>
-      <p style="color: var(--muted); font-size: 0.9rem;">Certains requièrent un compte.</p>
-      <div class="tools-list">
-        <a class="tool-chip" href="https://chatgpt.com/" target="_blank" rel="noopener">ChatGPT <span class="arrow">↗</span></a>
-        <a class="tool-chip" href="https://claude.ai/" target="_blank" rel="noopener">Claude <span class="arrow">↗</span></a>
-        <a class="tool-chip" href="https://copilot.microsoft.com/" target="_blank" rel="noopener">Copilot <span class="arrow">↗</span></a>
-        <a class="tool-chip" href="https://www.ecosia.org/ai-chat" target="_blank" rel="noopener">Ecosia IA <span class="arrow">↗</span></a>
-        <a class="tool-chip" href="https://euria.infomaniak.com/" target="_blank" rel="noopener">Euria <span class="arrow">↗</span></a>
-        <a class="tool-chip" href="https://gemini.google.com/" target="_blank" rel="noopener">Gemini <span class="arrow">↗</span></a>
-        <a class="tool-chip" href="https://chat.mistral.ai/chat" target="_blank" rel="noopener">Le Chat <span class="arrow">↗</span></a>
-        <a class="tool-chip" href="https://lumo.proton.me/" target="_blank" rel="noopener">Lumo <span class="arrow">↗</span></a>
-        <a class="tool-chip" href="https://notebooklm.google.com/" target="_blank" rel="noopener">NotebookLM <span class="arrow">↗</span></a>
-      </div>
-    </div>
-  </section>
-
   <!-- EXERCICES -->
   <section id="exercices" style="position: relative;">
     <div class="container">
       <span class="deco-mark br">?</span>
       <span class="section-num">§ 04</span>
       <h2>Les exercices</h2>
-      <p class="exercises-intro">Huit pistes pour mettre l'IA au service du mémoire&nbsp;— de la découverte d'un thème à la mise en forme bibliographique.</p>
+      <p class="exercises-intro">Chaque exercice comporte une <strong>étape de vérification</strong>. Selon votre avancement dans le travail de mémoire, choisissez parmi les exercices ci-dessous. La plupart peuvent s'appliquer à d'autres travaux que vous devez produire.</p>
 
       <!-- EXO 1 -->
       <article class="exercise">
@@ -588,6 +911,10 @@
             <div class="exo-meta">
               <span class="exo-meta-label">Résultat</span>
               <p class="exo-meta-content">Obtenir une bibliographie et des documents pour découvrir un thème.</p>
+            </div>
+            <div class="exo-meta" style="grid-column: 1 / -1;">
+              <span class="exo-meta-label">Vérification</span>
+              <p class="exo-meta-content">Vérifier l'existence des auteurs et des ouvrages que vous devez consulter — c'est une obligation pour pouvoir les citer&nbsp;: Wikipédia, Cairn.info, bibliothèque…</p>
             </div>
           </div>
         </div>
